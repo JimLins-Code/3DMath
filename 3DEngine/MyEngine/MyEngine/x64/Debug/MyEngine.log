@@ -1,0 +1,4 @@
+﻿  MyEngine.cpp
+d:\my_program\3dmath\mathtools\myengine\myengine\myengine.cpp(44): warning C4244: “参数”: 从“double”转换到“DWORD”，可能丢失数据
+  MyEngine.vcxproj -> D:\My_Program\3DMath\MathTools\MathTools\x64\Debug\MyEngine.exe
+  MyEngine.vcxproj -> D:\My_Program\3DMath\MathTools\MathTools\x64\Debug\MyEngine.pdb (Full PDB)

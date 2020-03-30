@@ -1,0 +1,7 @@
+﻿  EulerAngles.cpp
+  Quaternion.cpp
+d:\my_program\3dmath\mathtools\mathtools\quaternion.cpp(187): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\my_program\3dmath\mathtools\mathtools\quaternion.cpp(189): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+EulerAngles.obj : warning LNK4006: "float __cdecl safeAcos(float)" (?safeAcos@@YAMM@Z) 已在 Quaternion.obj 中定义；已忽略第二个定义
+EulerAngles.obj : warning LNK4006: "float __cdecl wrapPi(float)" (?wrapPi@@YAMM@Z) 已在 Quaternion.obj 中定义；已忽略第二个定义
+  MathTools.vcxproj -> D:\My_Program\3DMath\MathTools\MathTools\x64\Debug\MathTools\MathTools.lib
