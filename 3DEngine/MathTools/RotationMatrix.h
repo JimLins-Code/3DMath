@@ -1,4 +1,17 @@
 #pragma once
+//////////////////////////////////////////////////////////////////////////
+//
+// 3D图形数学基础
+// 
+// RotationMatrix.h - 类RotationMatrix的声明
+// 
+// 该类为指标是旋转的矩阵，用3x3矩阵形式表示。使用方式：
+//	1，初始化矩阵，使用表示方位的EulerAngle/quaternion初始化。注意区分“物体->惯性空间"或相反
+//	2，用矩阵执行向量的旋转
+// 
+//////////////////////////////////////////////////////////////////////////
+
+#include "EulerAngles.h"
 
 class Vector3;
 class EurlerAngle;
@@ -23,6 +36,7 @@ class RotationMatrix
 		void fromInertialToObjectQuaternion(const Quaternion& q);
 		void fromObjectToInertialQuaternion(const Quaternion& q);
 
+		// 执行旋转
 		Vector3 inertialToObject(const Vector3& v)const;
 		Vector3 objectToInertial(const Vector3& v)const;
 
