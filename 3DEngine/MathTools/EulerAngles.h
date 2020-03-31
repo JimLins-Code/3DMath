@@ -22,7 +22,6 @@ class EulerAngle
 		void identity()
 		{
 			heading = pitch = bank = 0.0f;
-			std::string* str = new std::string("welcome");
 		}
 
 		// 变换为限制集欧拉角
