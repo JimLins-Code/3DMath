@@ -56,7 +56,7 @@ class Matrix4x3
 		void setupRotate(const Vector3& axis, float theta);
 
 		// 构造旋转矩阵
-		void fromQuaternion(const Quaternion& q);
+		void setupfromQuaternion(const Quaternion& q);
 
 		// 沿坐标轴缩放 如Vector3(1.0,1.0,0.5)表示沿Z轴缩放0.5倍
 		void setupScale(const Vector3& s);
@@ -64,14 +64,20 @@ class Matrix4x3
 		void setupScalAlongAxis(const Vector3& axis, float k);
 
 		// 切变矩阵
+		// axis为1：表示用x切变y、z。
+		// axis为2：表示用y切变x、z。
+		// axis为3：表示用z切变x、y。
 		void setupShear(int axis, float s, float t);
 
 		// 投影矩阵，投影平面过原点
 		void setupProjectionMatrix(const Vector3& n);
 
 		// 反射矩阵
+		// axis 为 1： 沿 x= k平面反射
+		// axis 为 2： 沿 y= k平面反射
+		// axis 为 3： 沿 z= k平面反射
 		void setupReflectionMatrix(int axis, float k = 0.0f);
-		// 构造沿任意平面的反射矩阵
+		// 构造沿任意平面的反射矩阵,该平面经过原点
 		void setupReflectionMatrix(const Vector3& n);
 
 };

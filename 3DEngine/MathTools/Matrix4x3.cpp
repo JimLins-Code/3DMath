@@ -18,12 +18,37 @@ Matrix4x3::~Matrix4x3()
 
 Vector3 Matrix4x3::operator*(const Vector3 & p)
 {
-	return Vector3();
+	Vector3 ret;
+
+	ret.x = m11*p.x + m21*p.y + m31*p.z;
+	ret.y = m12*p.x + m22*p.y + m23*p.z;
+	ret.z = m13*p.x + m23*p.y + m33*p.z;
+
+	return ret;
 }
 
 Matrix4x3 Matrix4x3::operator*(const Matrix4x3 & m)
 {
-	return Matrix4x3();
+	Matrix4x3 ret;
+
+	ret.m11 = m11*m.m11 + m12*m.m21 + m13*m.m31;
+	ret.m12 = m11*m.m12 + m12*m.m22 + m13*m.m32;
+	ret.m13 = m11*m.m13 + m12*m.m23 + m13*m.m33;
+
+	ret.m21 = m21*m.m11 + m22*m.m21 + m23*m.m31;
+	ret.m22 = m21*m.m12 + m22*m.m22 + m23*m.m32;
+	ret.m23 = m21*m.m13 + m22*m.m23 + m23*m.m33;
+
+	ret.m31 = m31*m.m11 + m32*m.m21 + m33*m.m31;
+	ret.m32 = m31*m.m12 + m32*m.m22 + m33*m.m32;
+	ret.m33 = m31*m.m13 + m32*m.m23 + m33*m.m33;
+
+	// 计算平移部分
+	ret.tx = tx*m.m11 + ty*m.m21 + tz*m.m31;
+	ret.ty = tx*m.m12 + ty*m.m22 + tz*m.m23;
+	ret.tz = tx*m.m13 + ty*m.m23 + tz*m.m33;
+
+	return ret;
 }
 
 Matrix4x3 & Matrix4x3::operator*=(const Matrix4x3 & m)
@@ -163,7 +188,7 @@ Vector3 Matrix4x3::getPositionFromLocalToParentMatrix() const
 
 void Matrix4x3::setupRotate(const Vector3 & axis, float theta)
 {
-	//assert(fabs(axis*axis - 1.0f) < 0.01f);
+	assert(fabs(axis*axis - 1.0f) < 0.01f);
 	// 具体的推导过程参照《3D数学基础:图形与游戏开发》 8.2.3章节
 	float sin, cos;
 	sinCos(&sin, &cos, theta);
@@ -189,9 +214,27 @@ void Matrix4x3::setupRotate(const Vector3 & axis, float theta)
 	tx = ty = tz = 0.0f;
 }
 
-void Matrix4x3::fromQuaternion(const Quaternion & q)
+void Matrix4x3::setupfromQuaternion(const Quaternion & q)
 {
 
+	float ww = 2.0f*q.w;
+	float xx = 2.0f*q.x;
+	float yy = 2.0f*q.y;
+	float zz = 2.0f*q.z;
+
+	m11 = 1.0f - yy*q.y - zz*q.z;
+	m12 = xx*q.y + ww*q.z;
+	m13 = xx*q.z - ww*q.x;
+
+	m21 = xx*q.y - ww*q.z;
+	m22 = 1.0f - xx*q.x - zz*q.z;
+	m23 = yy*q.z + ww*q.x;
+
+	m31 = xx*q.z + ww*q.y;
+	m32 = yy*q.z - ww*q.x;
+	m33 = 1.0f - xx*q.x - yy*q.y;
+
+	tx = ty = tz = 0.0f;
 }
 
 void Matrix4x3::setupScale(const Vector3 & s)
@@ -203,7 +246,7 @@ void Matrix4x3::setupScale(const Vector3 & s)
 void Matrix4x3::setupScalAlongAxis(const Vector3 & axis, float k)
 {
 	// 具体的推导过程参照《3D数学基础:图形与游戏开发》 8.3.2章节
-	//assert(fabs(axis*axis - 1.0f) < 0.001f);
+	assert(fabs(axis*axis - 1.0f) < 0.001f);
 	float a = k - 1.0f;
 	float ax = a*axis.x;
 	float ay = a*axis.y;
@@ -220,16 +263,94 @@ void Matrix4x3::setupScalAlongAxis(const Vector3 & axis, float k)
 
 void Matrix4x3::setupShear(int axis, float s, float t)
 {
+	identity();
+	switch (axis)
+	{
+	case 1:
+	{
+		m12 = s;
+		m13 = t;
+		break;
+	}
+	case 2:
+	{
+		m21 = s;
+		m23 = t;
+		break;
+	}
+	case 3:
+	{
+		m31 = s;
+		m32 = t;
+		break;
+	}
+	default:
+		assert(false);
+		break;
+	}
 }
 
-void Matrix4x3::setupProjectionMatrix(const Vector3 & n)
+void Matrix4x3::setupProjectionMatrix(const Vector3& n)
 {
+	assert(fabs(n*n - 1.0f) < 0.01);
+
+	m11 = 1.0 - n.x*n.x;
+	m22 = 1.0f - n.y*n.y;
+	m33 = 1.0f - n.z*n.z;
+
+	m12 = m21 = -n.x*n.y;
+	m13 = m31 = -n.x*n.z;
+	m23 = m32 = -n.y*n.z;
+
+	tx = ty = tz = 0.0f;
 }
 
 void Matrix4x3::setupReflectionMatrix(int axis, float k)
 {
+	identity();
+	switch (axis)
+	{
+	case 1: // 沿 x= k平面反射
+	{		
+		m11 = -1.0f;
+		tx = 2.0f*k;
+		break;
+	}
+	case 2:
+	{
+		m22 = -1.0f;
+		ty = 2.0f*k;
+		break;
+	}
+	case 3:
+	{
+		m33 = -1.0f;
+		tz = 2.0f*k;
+		break;
+	}
+	default:
+		assert(false);
+		break;
+	}
 }
 
-void Matrix4x3::setupReflectionMatrix(const Vector3 & n)
+void Matrix4x3::setupReflectionMatrix(const Vector3& n)
 {
+	assert(fabs(n*n - 1.0f) < 0.01);
+	
+	// 计算公共子表达式
+	float ax = -2.0*n.x;
+	float ay = -2.0*n.y;
+	float az = -2.0*n.z;
+
+	m11 = 1.0 + ax*n.x;
+	m22 = 1.0 + ay*n.y;
+	m33 = 1.0f +az*n.z;
+
+	m12 = m21 = ax*n.y;
+	m13 = m31 = ax*n.z;
+	m23 = m32 = ay*n.z;
+
+	// 平移部分置零
+	tx = ty = tz = 0.0f;
 }

@@ -74,14 +74,14 @@ class Vector3
 			return Vector3(x*k, y*k, z*k);
 		}
 		// 除常数
-		Vector3 operator/(float k)
+		Vector3 operator/(float k) const 
 		{
 			float oneOverk = 1.0f / k;
 			//return *this*oneOverk;
 			return Vector3(x*oneOverk, y*oneOverk, z*oneOverk);
 		}
 		// 向量点乘
-		float operator*(const Vector3& vec)
+		float operator*(const Vector3& vec) const
 		{
 			return x*vec.x + y*vec.y + z*vec.z;
 		}
