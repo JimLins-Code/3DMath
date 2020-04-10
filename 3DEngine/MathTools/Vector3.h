@@ -64,9 +64,14 @@ class Vector3
 			return Vector3(-x, -y, -z);
 		}
 		// 重载相加符号
-		Vector3 operator+ (const Vector3& vec)
+		Vector3 operator+ (const Vector3& vec)const
 		{
 			return Vector3(x + vec.x, y + vec.y, z + vec.z);
+		}
+
+		Vector3 operator- (const Vector3& vec)const
+		{
+			return Vector3(x - vec.x, y - vec.y, z - vec.z);
 		}
 		// 乘常数
 		Vector3 operator* (float k)const

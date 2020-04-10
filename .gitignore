@@ -15,3 +15,4 @@
 3DEngine/MathTools/x64/Release/MathTools.tlog/MathTools.read.1u.tlog
 *.tlog
 3DEngine/MathTools/x64/Release/MathTools.tlog/MathTools.lastbuildstate
+*.obj
